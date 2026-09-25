@@ -1,6 +1,7 @@
 import { TeamValidator } from '../sim/team-validator';
 import { buildRandomParty, mutateParty } from './party-builder';
 import { evaluateParties } from './battle-evaluator';
+import { type EvaluationConfig } from './experiment-config';
 
 // Ver.1では10世代だけ探索する。
 // まず「探索Loopが最後まで自動で回ること」を優先する。
@@ -8,6 +9,14 @@ const NUMBER_OF_GENERATIONS = 10;
 
 // 1世代につき100試合でCurrentとCandidateを比較する。
 const GAMES_PER_GENERATION = 100;
+
+// 戦略・選出はVer.1のまま。両者のAIを必須の設定として明記する。
+const evaluationConfig: EvaluationConfig = {
+	format: 'gen2nc2000',
+	currentAI: 'random',
+	candidateAI: 'random',
+	games: GAMES_PER_GENERATION,
+};
 
 /**
  * パーティ内容を表示する。
@@ -48,7 +57,7 @@ async function main() {
 	console.log('=== Milestone 11: Automatic Party Search ===');
 	console.log('');
 
-	const validator = new TeamValidator('gen2nc2000');
+	const validator = new TeamValidator(evaluationConfig.format);
 
 	// ⑨のParty Builderから探索開始地点を作る
 	let currentParty = buildRandomParty();
@@ -95,7 +104,7 @@ async function main() {
 		const result = await evaluateParties(
 			currentParty,
 			candidateParty,
-			GAMES_PER_GENERATION,
+			evaluationConfig,
 		);
 
 		console.log(

@@ -1,4 +1,6 @@
 import { Runner } from '../sim/tools/runner';
+import { createPokemonSet } from './pokemon-set';
+import { createPlayerOptions, printEvaluationConfig, type EvaluationConfig } from './experiment-config';
 
 const team = [
 	{
@@ -43,20 +45,29 @@ const team = [
 		moves: ['Surf', 'Psychic', 'Recover', 'Thunder Wave'],
 		level: 50,
 	},
-];
+].map(set => createPokemonSet(set));
 
 const NUMBER_OF_GAMES = 100;
 
+// AIと選出方式は実験開始時に表示し、Runnerにも同じ設定を渡す。
+const evaluationConfig: EvaluationConfig = {
+	format: 'gen2nc2000',
+	currentAI: 'random',
+	candidateAI: 'random',
+	games: NUMBER_OF_GAMES,
+};
+
 async function main() {
+	printEvaluationConfig(evaluationConfig);
 	console.log(`Starting ${NUMBER_OF_GAMES} battles...`);
 
 	const startTime = Date.now();
 
 	for (let i = 1; i <= NUMBER_OF_GAMES; i++) {
 		const runner = new Runner({
-			format: 'gen2nc2000',
-			p1options: { team },
-			p2options: { team },
+			format: evaluationConfig.format,
+			p1options: createPlayerOptions(evaluationConfig.currentAI, team),
+			p2options: createPlayerOptions(evaluationConfig.candidateAI, team),
 			output: false,
 			error: true,
 		});

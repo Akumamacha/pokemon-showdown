@@ -1,4 +1,6 @@
-import { Runner } from '../sim/tools/runner';
+import { createPokemonSet } from './pokemon-set';
+import { evaluateParties } from './battle-evaluator';
+import { type EvaluationConfig } from './experiment-config';
 
 const partyA = [
 	{
@@ -43,7 +45,7 @@ const partyA = [
 		moves: ['Surf', 'Psychic', 'Recover', 'Thunder Wave'],
 		level: 50,
 	},
-];
+].map(set => createPokemonSet(set));
 
 const partyB = [
 	{
@@ -88,9 +90,16 @@ const partyB = [
 		moves: ['Drill Peck', 'Toxic', 'Rest', 'Whirlwind'],
 		level: 50,
 	},
-];
+].map(set => createPokemonSet(set));
 
 const NUMBER_OF_GAMES = 100;
+
+const evaluationConfig: EvaluationConfig = {
+	format: 'gen2nc2000',
+	currentAI: 'random',
+	candidateAI: 'random',
+	games: NUMBER_OF_GAMES,
+};
 
 async function main() {
 	console.log('=== Milestone 6 ===');
@@ -98,49 +107,9 @@ async function main() {
 	console.log(`Battles: ${NUMBER_OF_GAMES}`);
 	console.log('');
 
-	let partyAWins = 0;
-	let partyBWins = 0;
-	let draws = 0;
-
-	const startTime = Date.now();
-
-	for (let i = 1; i <= NUMBER_OF_GAMES; i++) {
-		let winner = '';
-
-		const runner = new Runner({
-			format: 'gen2nc2000',
-			p1options: { team: partyA },
-			p2options: { team: partyB },
-			output: false,
-			error: true,
-
-			onChunk: chunk => {
-				for (const line of chunk.split('\n')) {
-					if (line.startsWith('|win|')) {
-						winner = line.slice('|win|'.length);
-					} else if (line === '|tie|') {
-						winner = 'tie';
-					}
-				}
-			},
-		});
-
-		await runner.run();
-
-		if (winner === 'Bot 1') {
-			partyAWins++;
-		} else if (winner === 'Bot 2') {
-			partyBWins++;
-		} else {
-			draws++;
-		}
-
-		if (i % 10 === 0) {
-			console.log(`${i}/${NUMBER_OF_GAMES} battles completed`);
-		}
-	}
-
-	const elapsedSeconds = (Date.now() - startTime) / 1000;
+	// 共通Evaluatorを使い、古い実験でも結果不明をdrawへ混ぜない。
+	const { currentWins: partyAWins, candidateWins: partyBWins, draws, elapsedSeconds } =
+		await evaluateParties(partyA, partyB, evaluationConfig, true);
 
 	console.log('');
 	console.log('=== Milestone 6 Result ===');

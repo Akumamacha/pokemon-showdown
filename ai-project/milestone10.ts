@@ -1,6 +1,7 @@
-import { Runner } from '../sim/tools/runner';
 import { TeamValidator } from '../sim/team-validator';
 import { buildRandomParty, mutateParty } from './party-builder';
+import { evaluateParties } from './battle-evaluator';
+import { type EvaluationConfig } from './experiment-config';
 
 const NUMBER_OF_GAMES = 100;
 
@@ -21,79 +22,13 @@ function printParty(title: string, party: PokemonSet[]) {
 	console.log('');
 }
 
-/**
- * 2つのパーティを指定回数戦わせ、勝敗を集計する。
- *
- * Current Party = 現在の基準パーティ
- * Candidate Party = 1匹変異させた候補パーティ
- */
-async function evaluateParties(
-	currentParty: PokemonSet[],
-	candidateParty: PokemonSet[],
-) {
-	let currentWins = 0;
-	let candidateWins = 0;
-	let draws = 0;
-
-	const startTime = Date.now();
-
-	for (let i = 1; i <= NUMBER_OF_GAMES; i++) {
-		let winner = '';
-
-		// ⑥で作ったRunnerによる自動対戦を再利用する
-		const runner = new Runner({
-			format: 'gen2nc2000',
-
-			// Bot 1 = Current Party
-			p1options: {
-				team: currentParty,
-			},
-
-			// Bot 2 = Candidate Party
-			p2options: {
-				team: candidateParty,
-			},
-
-			output: false,
-			error: true,
-
-			// バトルログから勝者を取得する
-			onChunk: chunk => {
-				for (const line of chunk.split('\n')) {
-					if (line.startsWith('|win|')) {
-						winner = line.slice('|win|'.length);
-					} else if (line === '|tie|') {
-						winner = 'tie';
-					}
-				}
-			},
-		});
-
-		await runner.run();
-
-		// 勝敗を集計する
-		if (winner === 'Bot 1') {
-			currentWins++;
-		} else if (winner === 'Bot 2') {
-			candidateWins++;
-		} else {
-			draws++;
-		}
-
-		if (i % 10 === 0) {
-			console.log(`${i}/${NUMBER_OF_GAMES} battles completed`);
-		}
-	}
-
-	const elapsedSeconds = (Date.now() - startTime) / 1000;
-
-	return {
-		currentWins,
-		candidateWins,
-		draws,
-		elapsedSeconds,
-	};
-}
+// Ver.1と同じ操作AIを、暗黙の既定値ではなく設定として指定する。
+const evaluationConfig: EvaluationConfig = {
+	format: 'gen2nc2000',
+	currentAI: 'random',
+	candidateAI: 'random',
+	games: NUMBER_OF_GAMES,
+};
 
 async function main() {
 	console.log('=== Milestone 10: Mutation + Battle + Evaluation ===');
@@ -106,7 +41,7 @@ async function main() {
 	const candidateParty = mutateParty(currentParty);
 
 	// Showdown自身に両方のパーティの合法性を確認してもらう
-	const validator = new TeamValidator('gen2nc2000');
+	const validator = new TeamValidator(evaluationConfig.format);
 
 	const currentProblems = validator.validateTeam(currentParty);
 	const candidateProblems = validator.validateTeam(candidateParty);
@@ -159,6 +94,8 @@ async function main() {
 	const result = await evaluateParties(
 		currentParty,
 		candidateParty,
+		evaluationConfig,
+		true,
 	);
 
 	// 全試合の結果数が正しいか確認する

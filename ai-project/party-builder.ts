@@ -1,4 +1,6 @@
-export const pokemonPool: PokemonSet[] = [
+import { createPokemonSet, type PokemonSetInput } from './pokemon-set';
+
+const poolInputs: PokemonSetInput[] = [
 	{
 		name: 'Snorlax',
 		species: 'Snorlax',
@@ -78,6 +80,10 @@ export const pokemonPool: PokemonSet[] = [
 	},
 ];
 
+// NC2000のValidatorが未指定EVへ補完していた252を維持する。
+// 直接Runnerへ渡す古い単発実験の既定値（0）とは区別する。
+export const pokemonPool: PokemonSet[] = poolInputs.map(set => createPokemonSet(set, 252));
+
 export function buildRandomParty(): PokemonSet[] {
 	const candidates = [...pokemonPool];
 	const party: PokemonSet[] = [];
@@ -95,7 +101,8 @@ export function buildRandomParty(): PokemonSet[] {
 		const selected =
 			validCandidates[Math.floor(Math.random() * validCandidates.length)];
 
-		party.push(selected);
+		// Validatorは入力を補完するため、候補プールの参照を渡さない。
+		party.push(structuredClone(selected));
 
 		if (selected.item) {
 			usedItems.add(selected.item);
@@ -115,8 +122,8 @@ export function buildRandomParty(): PokemonSet[] {
  * 技・アイテム・レベルは変更せず「ポケモン1匹の交換」だけを変異とする。
  */
 export function mutateParty(party: PokemonSet[]): PokemonSet[] {
-	// 元のパーティを書き換えないようにコピーする
-	const mutatedParty = [...party];
+	// 技配列やEV/IVも含めてコピーし、CurrentとCandidateを独立させる。
+	const mutatedParty = structuredClone(party);
 
 	// 交換する場所をランダムに1か所選ぶ
 	const replaceIndex = Math.floor(Math.random() * mutatedParty.length);
@@ -153,7 +160,7 @@ export function mutateParty(party: PokemonSet[]): PokemonSet[] {
 	const replacement =
 		candidates[Math.floor(Math.random() * candidates.length)];
 
-	mutatedParty[replaceIndex] = replacement;
+	mutatedParty[replaceIndex] = structuredClone(replacement);
 
 	return mutatedParty;
 }
