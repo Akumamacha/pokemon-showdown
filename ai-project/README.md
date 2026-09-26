@@ -229,3 +229,18 @@ node dist/ai-project/milestone12.js wp05 10 first6 simple simple-counter
 
 このCLIはWP05の対象PartyとAI/選出方式を指定し、基準側をrandom + first-legalに固定する。
 既存のmilestone11探索・旧schema記録は変更しない。
+
+## WP06 改善評価系の探索統合
+
+`integrated-experiment.ts` と `milestone13.ts` は、既存のParty Builder→Mutation→評価→採否の探索を保ったまま、
+探索前の初期Partyと探索後の最終PartyをWP05の同じ固定Benchmark条件で測定する導線である。
+Benchmark用seedは探索seedに `:benchmark` を付けた独立系列から導出し、探索中の勝敗を採否条件へ混ぜない。
+採否は従来どおり `candidateWins > currentWins` のみで決まり、探索本体の座席交換も行わない。
+
+```bash
+node dist/ai-project/milestone13.js wp06 1 1 simple-counter simple simple
+```
+
+記録は探索記録と前後Benchmark（2基準×両座席）を一つの統合JSONにまとめる。Current/CandidateのAIまたは
+Selectionが異なる場合は交絡条件として警告し、Party差の根拠として単独解釈しない。小試合数の勝敗から性能改善や
+統計的有意差は主張しない。旧milestone11 CLI、旧schema、WP04の公開species/type制約は維持する。

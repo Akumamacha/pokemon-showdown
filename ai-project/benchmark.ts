@@ -164,11 +164,15 @@ export async function runBenchmark(config: BenchmarkConfig, outputDirectory = pa
 			}
 			console.log(`${baseline.id} ${seat}: 対象${condition.result.targetWins} / 基準${condition.result.baselineWins} / 引分${condition.result.draws}`);
 		}
-			record.status = 'completed';
-			record.finishedAt = new Date().toISOString();
-			saveRecord(file, record);
+		record.status = 'completed';
+		record.finishedAt = new Date().toISOString();
+		saveRecord(file, record);
 		return { record, file };
 	} catch (error) {
-		record.status = 'failed'; record.error = String(error); record.finishedAt = new Date().toISOString(); saveRecord(file, record); throw error;
+		record.status = 'failed';
+		record.error = String(error);
+		record.finishedAt = new Date().toISOString();
+		saveRecord(file, record);
+		throw error;
 	}
 }
