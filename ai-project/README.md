@@ -1,4 +1,4 @@
-# Pokémon GSC AI Project — Ver.2 WP03
+# Pokémon GSC AI Project — Ver.2 WP04
 
 ## 実行・確認方法
 
@@ -14,7 +14,7 @@ npm run test:ai
 - `typecheck:ai`：専用の`ai-project/tsconfig.json`で旧milestoneを含むAI Projectとテストを検査する。
   親のstrict設定を引き継ぎ、`noEmit: true`と`incremental: false`によりJavaScriptや型検査キャッシュを出力しない。
   Showdownの依存先に必要な既存のグローバル型宣言も読み込む。ルートの型検査設定は変更しない。
-- `test:ai`：通常build後にM1・WP01・WP02・WP03のテストを実行する。
+- `test:ai`：通常build後にM1・WP01・WP02・WP03・WP04のテストを実行する。
   146通りの合法Party、共有参照、AI指定、Unknownの扱いを維持する。
   実Runnerの対戦ログ一致と、3世代×4試合の探索2回の全経路一致も検査する。
   build済みなら`node --test dist/ai-project/tests/*.test.js`でも実行できる。
@@ -26,6 +26,7 @@ node dist/ai-project/milestone11.js wp02 3 10 first-legal
 node dist/ai-project/milestone11.js wp02 3 10 default
 node dist/ai-project/milestone11.js wp03 3 10 first-legal simple simple
 node dist/ai-project/milestone11.js wp03 3 10 first-legal random simple
+node dist/ai-project/milestone11.js wp04 3 10 simple-counter random simple
 ```
 
 引数はseed、世代数、1世代の試合数、選出方式、Current AI、Candidate AI。
@@ -53,6 +54,10 @@ NC2000の実装は `config/formats.ts`、`data/rulesets.ts`、`sim/side.ts` を�
 `EvaluationConfig` に `currentSelection` / `candidateSelection` を指定できる。
 `first-legal` と `default` はPlayer AIから独立して選出だけを切り替える。
 `legacy`（API省略時）は従来AIの選出を維持し、randomはdefault、simpleはteam 256。
+
+`simple-counter` はWP04の簡易Selection AIで、合法な20候補だけを評価する。Team Previewで公開される相手6匹のspeciesだけを使い、各候補の通常技タイプの攻撃範囲から相手の技タイプによる被攻撃範囲を引いた整数スコアを計算する。Status技、威力、命中、持ち物、技、状態、相手の非公開情報は使わない。
+スコアが高い候補を選び、同点は合計レベル、slot順で決める。先発は候補内の攻撃スコアが高いslot、同点は小さいslot。相手Previewが欠損・6匹未満なら、最初の合法候補へフォールバックする。これは説明可能なベースラインであり、相性や強さの証明ではない。
+選出記録にはスコア、ルール説明、相手species要約を保存する。`simple-counter` と `random` / `simple` のPlayer AIは独立して指定できる。
 APIで選出指定のない旧設定を読み込んでも、新方式へ黙って切り替えない。
 defaultは合計LvルールのautoChooseで低レベル順・同レベル登録順となる。
 

@@ -1,7 +1,7 @@
 import { RandomPlayerAI } from '../sim/tools/random-player-ai';
 import { type AIOptions } from '../sim/tools/runner';
 import { SimplePlayerAI } from './simple-player-ai';
-import { enumerateSelections, type SelectionMode, type SelectedTeam } from './team-selection';
+import { chooseSimpleCounter, enumerateSelections, type SelectionMode, type SelectedTeam } from './team-selection';
 
 export type PlayerAIKind = 'random' | 'simple';
 
@@ -39,12 +39,14 @@ export function selectionDescription(ai: PlayerAIKind, mode: SelectionMode = 'le
 	if (mode === 'legacy') return PLAYER_AI[ai].selection;
 	if (mode === 'default') return PLAYER_AI.random.selection;
 	if (mode === 'first-legal') return 'first-legal (lexicographic slots; registration order; first slot leads)';
+	if (mode === 'simple-counter') return 'simple-counter (公開Previewの相性スコア; score desc; lead score desc)';
 	throw new Error(`Unknown Selection mode: ${mode}`);
 }
 
 export function createPlayerOptions(
 	ai: PlayerAIKind, team: PokemonSet[], mode: SelectionMode = 'legacy',
 	onSelection?: (selected: SelectedTeam) => void,
+	opponentTeam?: PokemonSet[],
 ): AIOptions {
 	if (ai !== 'random' && ai !== 'simple') throw new Error(`Unknown or missing Player AI: ${ai}`);
 	const preset = PLAYER_AI[ai];
@@ -56,6 +58,10 @@ export function createPlayerOptions(
 		command = `team ${candidates.legal[0].slots.join(',')}`;
 	} else if (mode === 'default') {
 		command = 'default';
+	} else if (mode === 'simple-counter') {
+		if (!opponentTeam) throw new Error('simple-counterには公開された相手Partyが必要です');
+		const decision = chooseSimpleCounter(team, opponentTeam);
+		command = `team ${decision.slots.join(',')}`;
 	}
 	const snapshot = structuredClone(team);
 	return {
@@ -77,6 +83,11 @@ export function createPlayerOptions(
 						onSelection({
 							slots, species: slots.map(slot => snapshot[slot - 1].species),
 							levels: slots.map(slot => snapshot[slot - 1].level),
+							...(mode === 'simple-counter' && opponentTeam ? (() => {
+								const decision = chooseSimpleCounter(snapshot, opponentTeam);
+								return { selection: { mode, score: decision.score, reason: decision.reason,
+									opponentSpecies: decision.opponentSpecies, opponentLevels: decision.opponentLevels } };
+							})() : {}),
 						});
 						recorded = true;
 					}

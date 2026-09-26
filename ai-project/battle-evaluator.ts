@@ -78,9 +78,9 @@ export async function evaluateParties(
 	// 同じPartyの合法候補列挙は評価ごとに一度だけ行う。
 	let selections: NonNullable<BattleRecord['selections']> = {};
 	const currentOptions = createPlayerOptions(settings.currentAI, currentParty, settings.currentSelection,
-		selected => { selections.current = selected; });
+		selected => { selections.current = selected; }, candidateParty);
 	const candidateOptions = createPlayerOptions(settings.candidateAI, candidateParty, settings.candidateSelection,
-		selected => { selections.candidate = selected; });
+		selected => { selections.candidate = selected; }, currentParty);
 
 	for (let i = 1; i <= numberOfGames; i++) {
 		let terminalLine = '';
