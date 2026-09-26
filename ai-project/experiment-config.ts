@@ -1,6 +1,7 @@
 import { RandomPlayerAI } from '../sim/tools/random-player-ai';
 import { type AIOptions } from '../sim/tools/runner';
 import { SimplePlayerAI } from './simple-player-ai';
+import { enumerateSelections, type SelectionMode, type SelectedTeam } from './team-selection';
 
 export type PlayerAIKind = 'random' | 'simple';
 
@@ -23,13 +24,60 @@ export interface EvaluationConfig {
 	currentAI: PlayerAIKind;
 	candidateAI: PlayerAIKind;
 	games: number;
+	currentSelection?: SelectionMode;
+	candidateSelection?: SelectionMode;
 }
 
-export function createPlayerOptions(ai: PlayerAIKind, team: PokemonSet[]): AIOptions {
+export function selectionDescription(ai: PlayerAIKind, mode: SelectionMode = 'legacy'): string {
+	if (mode === 'legacy') return PLAYER_AI[ai].selection;
+	if (mode === 'default') return PLAYER_AI.random.selection;
+	if (mode === 'first-legal') return 'first-legal (lexicographic slots; registration order; first slot leads)';
+	throw new Error(`Unknown Selection mode: ${mode}`);
+}
+
+export function createPlayerOptions(
+	ai: PlayerAIKind, team: PokemonSet[], mode: SelectionMode = 'legacy',
+	onSelection?: (selected: SelectedTeam) => void,
+): AIOptions {
 	if (ai !== 'random' && ai !== 'simple') throw new Error(`Unknown or missing Player AI: ${ai}`);
 	const preset = PLAYER_AI[ai];
+	selectionDescription(ai, mode);
+	let command: string | undefined;
+	if (mode === 'first-legal') {
+		const candidates = enumerateSelections(team);
+		if (!candidates.legal.length) throw new Error(`合法な選出がありません: ${candidates.partyProblems.join('; ')}`);
+		command = `team ${candidates.legal[0].slots.join(',')}`;
+	} else if (mode === 'default') {
+		command = 'default';
+	}
+	const snapshot = structuredClone(team);
 	return {
-		createAI: preset.createAI,
+		createAI: (stream, options) => {
+			const player = preset.createAI(stream, options);
+			const receive = player.receiveRequest.bind(player);
+			let preview: string[] = [];
+			let recorded = false;
+			// 操作AIを変えず、選出要求だけを差し替える。観測はBattle受理後のrequestから行う。
+			player.receiveRequest = request => {
+				if (!request.wait) {
+					const keys = request.side.pokemon.map(p => `${p.ident}|${p.details}`);
+					if (request.teamPreview) {
+						preview = keys;
+						if (command) { player.choose(command); return; }
+					} else if (!recorded && preview.length && onSelection) {
+						const slots = keys.map(key => preview.indexOf(key) + 1);
+						if (slots.length !== 3 || slots.includes(0)) throw new Error('選出結果を特定できません');
+						onSelection({
+							slots, species: slots.map(slot => snapshot[slot - 1].species),
+							levels: slots.map(slot => snapshot[slot - 1].level),
+						});
+						recorded = true;
+					}
+				}
+				receive(request);
+			};
+			return player;
+		},
 		// Ver.1のRunner設定を明記する。交代判断などの戦略は変更しない。
 		move: 0.7,
 		mega: 0.6,
@@ -46,9 +94,11 @@ export function printEvaluationConfig(config: EvaluationConfig): void {
 	}
 	const current = PLAYER_AI[config.currentAI];
 	const candidate = PLAYER_AI[config.candidateAI];
+	const currentSelection = selectionDescription(config.currentAI, config.currentSelection);
+	const candidateSelection = selectionDescription(config.candidateAI, config.candidateSelection);
 	console.log(`Format: ${config.format}`);
-	console.log(`Current AI (Bot 1): ${current.name}; Selection: ${current.selection}`);
-	console.log(`Candidate AI (Bot 2): ${candidate.name}; Selection: ${candidate.selection}`);
+	console.log(`Current AI (Bot 1): ${current.name}; Selection: ${currentSelection}`);
+	console.log(`Candidate AI (Bot 2): ${candidate.name}; Selection: ${candidateSelection}`);
 	console.log(`Games per evaluation: ${config.games}`);
 	console.log('AI move probability: 0.7; seats: fixed（seed管理は呼び出し元の設定による）');
 }

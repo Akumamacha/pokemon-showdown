@@ -1,3 +1,4 @@
+import { pokemonName } from './pokemon-display';
 import { TeamValidator } from '../sim/team-validator';
 import { buildRandomParty, mutateParty } from './party-builder';
 import { evaluateParties } from './battle-evaluator';
@@ -15,7 +16,7 @@ function printParty(title: string, party: PokemonSet[]) {
 		const pokemon = party[i];
 
 		console.log(
-			`  ${i + 1}. ${pokemon.name} Lv.${pokemon.level} @ ${pokemon.item}`
+			`  ${i + 1}. ${pokemonName(pokemon.species)} Lv.${pokemon.level} @ ${pokemon.item}`
 		);
 	}
 
@@ -71,7 +72,7 @@ async function main() {
 
 			console.log(
 				`Mutation: slot ${i + 1}: ` +
-				`${currentParty[i].species} -> ${candidateParty[i].species}`
+				`${pokemonName(currentParty[i].species)} → ${pokemonName(candidateParty[i].species)}`
 			);
 		}
 	}

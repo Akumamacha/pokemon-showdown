@@ -1,3 +1,4 @@
+import { pokemonName } from './pokemon-display';
 import { TeamValidator } from '../sim/team-validator';
 import { buildRandomParty } from './party-builder';
 
@@ -25,7 +26,7 @@ function main() {
 			console.error('Party contents:');
 			for (const pokemon of party) {
 				console.error(
-					`  ${pokemon.name} Lv.${pokemon.level} @ ${pokemon.item}`
+					`  ${pokemonName(pokemon.species)} Lv.${pokemon.level} @ ${pokemon.item}`
 				);
 			}
 
@@ -36,7 +37,7 @@ function main() {
 			console.log(`Party ${i}:`);
 			for (const pokemon of party) {
 				console.log(
-					`  ${pokemon.name} Lv.${pokemon.level} @ ${pokemon.item}`
+					`  ${pokemonName(pokemon.species)} Lv.${pokemon.level} @ ${pokemon.item}`
 				);
 			}
 			console.log('  Showdown validation: OK');

@@ -5,7 +5,8 @@ import * as path from 'node:path';
 import { TeamValidator } from '../sim/team-validator';
 import { type PRNGSeed } from '../sim/prng';
 import { evaluateParties, type BattleRecord, type RunBattle } from './battle-evaluator';
-import { PLAYER_AI, printEvaluationConfig, type EvaluationConfig } from './experiment-config';
+import { PLAYER_AI, printEvaluationConfig, selectionDescription, type EvaluationConfig } from './experiment-config';
+import { displayParty, pokemonName } from './pokemon-display';
 import { deriveSeed, experimentRNG, SEED_SCHEME } from './experiment-rng';
 import { buildRandomParty, mutateParty } from './party-builder';
 
@@ -36,7 +37,7 @@ export interface GenerationRecord {
 }
 
 export interface ExperimentRecord {
-	schemaVersion: 1;
+	schemaVersion: 2;
 	id: string;
 	startedAt: string;
 	finishedAt?: string;
@@ -82,7 +83,10 @@ export async function runExperiment(
 	outputDirectory = path.resolve('ai-project/experiments'),
 	runBattle?: RunBattle,
 ): Promise<{ record: ExperimentRecord, file: string }> {
-	const settings = structuredClone(config);
+	// WP01の設定に選出指定がない場合は旧AIの選出を保ち、保存時には明示する。
+	const settings = { ...structuredClone(config),
+		currentSelection: config.currentSelection ?? 'legacy', candidateSelection: config.candidateSelection ?? 'legacy',
+	};
 	printEvaluationConfig(settings);
 	if (!Number.isSafeInteger(settings.generations) || settings.generations < 1) {
 		throw new Error('世代数は正の整数で指定してください');
@@ -93,12 +97,12 @@ export async function runExperiment(
 	// 入力文字列を直接ファイル名に使わず、区切り文字や長さによる問題を防ぐ。
 	const file = path.resolve(outputDirectory, `${id}-seed-${partySeed.slice(5)}.json`);
 	const record: ExperimentRecord = {
-		schemaVersion: 1, id, startedAt, software: softwareInfo(), experiment: settings,
+		schemaVersion: 2, id, startedAt, software: softwareInfo(), experiment: settings,
 		ai: {
 			current: PLAYER_AI[settings.currentAI].name,
 			candidate: PLAYER_AI[settings.candidateAI].name,
-			currentSelection: PLAYER_AI[settings.currentAI].selection,
-			candidateSelection: PLAYER_AI[settings.candidateAI].selection,
+			currentSelection: selectionDescription(settings.currentAI, settings.currentSelection),
+			candidateSelection: selectionDescription(settings.candidateAI, settings.candidateSelection),
 		},
 		policy: { seats: 'Current=Bot 1, Candidate=Bot 2', acceptance: 'candidateWins > currentWins', move: 0.7, mega: 0.6 },
 		rng: {
@@ -120,6 +124,7 @@ export async function runExperiment(
 		const initial = buildRandomParty(experimentRNG(settings.experimentSeed, 'party'));
 		validate(initial);
 		record.initialParty = structuredClone(initial);
+		console.log(`初期パーティ: ${displayParty(initial)}`);
 		record.finalParty = structuredClone(initial);
 		saveRecord(file, record);
 		for (let generation = 1; generation <= settings.generations; generation++) {
@@ -140,12 +145,17 @@ export async function runExperiment(
 			record.generations.push(entry);
 			validate(candidate);
 			saveRecord(file, record);
-			const mutationText = entry.mutation.map(m => `${m.from} → ${m.to}`).join(', ');
+			const mutationText = entry.mutation.map(m => `${pokemonName(m.from)} → ${pokemonName(m.to)}`).join(', ');
 			console.log(`【第${generation}世代】変異: ${mutationText}`);
 			const result = await evaluateParties(current, candidate, settings, false, runBattle, {
 				seeds: entry.battleSeeds,
 				onBattle: battle => {
 					entry.battles.push(battle);
+					for (const side of ['current', 'candidate'] as const) {
+						const selected = battle.selections?.[side];
+						if (selected) console.log(`第${battle.game}試合 ${side} 選出（先頭が先発）: ` +
+							selected.species.map((s, i) => `${pokemonName(s)} Lv.${selected.levels[i]}`).join(', '));
+					}
 					const key = {
 						current: 'currentWins', candidate: 'candidateWins', draw: 'draws', unknown: 'unknown', error: 'errors',
 					} as const;
@@ -161,7 +171,7 @@ export async function runExperiment(
 		record.status = 'completed';
 		record.finishedAt = new Date().toISOString();
 		saveRecord(file, record);
-		console.log(`【探索完了】\n最終Party: ${record.finalParty.map(p => p.species).join(', ')}\n実験記録: ${file}`);
+		console.log(`【探索完了】\n最終パーティ: ${displayParty(record.finalParty)}\n実験記録: ${file}`);
 		return { record, file };
 	} catch (error) {
 		record.status = 'failed';

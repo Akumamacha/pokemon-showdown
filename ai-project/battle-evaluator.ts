@@ -1,6 +1,7 @@
 import { Runner, type RunnerOptions } from '../sim/tools/runner';
 import { type PRNGSeed } from '../sim/prng';
 import { createPlayerOptions, printEvaluationConfig, type EvaluationConfig } from './experiment-config';
+import { type SelectedTeam } from './team-selection';
 
 export type BattleOutcome = 'current' | 'candidate' | 'draw' | 'unknown';
 
@@ -11,6 +12,7 @@ export interface BattleRecord {
 	runnerSeed: PRNGSeed;
 	outcome: BattleOutcome | 'error';
 	error?: string;
+	selections?: { current?: SelectedTeam, candidate?: SelectedTeam };
 }
 
 export interface EvaluationTrace {
@@ -73,9 +75,16 @@ export async function evaluateParties(
 	let draws = 0;
 
 	const startTime = Date.now();
+	// 同じPartyの合法候補列挙は評価ごとに一度だけ行う。
+	let selections: NonNullable<BattleRecord['selections']> = {};
+	const currentOptions = createPlayerOptions(settings.currentAI, currentParty, settings.currentSelection,
+		selected => { selections.current = selected; });
+	const candidateOptions = createPlayerOptions(settings.candidateAI, candidateParty, settings.candidateSelection,
+		selected => { selections.candidate = selected; });
 
 	for (let i = 1; i <= numberOfGames; i++) {
 		let terminalLine = '';
+		selections = {};
 
 		// Showdown Runnerで1試合を実行する
 		const options: RunnerOptions = {
@@ -84,10 +93,10 @@ export async function evaluateParties(
 			prng: seeds?.[i - 1],
 
 			// Bot 1には現在の基準パーティを渡す
-			p1options: createPlayerOptions(settings.currentAI, currentParty),
+			p1options: { ...currentOptions, team: structuredClone(currentOptions.team) },
 
 			// Bot 2には変異後の候補パーティを渡す
-			p2options: createPlayerOptions(settings.candidateAI, candidateParty),
+			p2options: { ...candidateOptions, team: structuredClone(candidateOptions.team) },
 
 			output: false,
 			error: true,
@@ -110,14 +119,14 @@ export async function evaluateParties(
 			await runBattle(options);
 		} catch (error) {
 			if (trace && seeds) trace.onBattle({
-				game: i, runnerSeed: seeds[i - 1], outcome: 'error', error: String(error),
+				game: i, runnerSeed: seeds[i - 1], outcome: 'error', error: String(error), selections,
 			});
 			throw new Error(`Battle ${i}/${numberOfGames} failed: ${String(error)}`);
 		}
 
 		const outcome = parseBattleOutcome(terminalLine);
 		if (trace && seeds) trace.onBattle({
-			game: i, runnerSeed: seeds[i - 1], outcome,
+			game: i, runnerSeed: seeds[i - 1], outcome, selections,
 			...(outcome === 'unknown' ? { error: 'Unknown result (missing win/tie log)' } : {}),
 		});
 
