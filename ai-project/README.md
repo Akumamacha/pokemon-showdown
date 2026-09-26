@@ -1,4 +1,4 @@
-# Pokémon GSC AI Project — Ver.2 WP02
+# Pokémon GSC AI Project — Ver.2 WP03
 
 ## 実行・確認方法
 
@@ -14,7 +14,7 @@ npm run test:ai
 - `typecheck:ai`：専用の`ai-project/tsconfig.json`で旧milestoneを含むAI Projectとテストを検査する。
   親のstrict設定を引き継ぎ、`noEmit: true`と`incremental: false`によりJavaScriptや型検査キャッシュを出力しない。
   Showdownの依存先に必要な既存のグローバル型宣言も読み込む。ルートの型検査設定は変更しない。
-- `test:ai`：通常build後にM1・WP01の全15テストとWP02の選出・表示テストを実行する。
+- `test:ai`：通常build後にM1・WP01・WP02・WP03のテストを実行する。
   146通りの合法Party、共有参照、AI指定、Unknownの扱いを維持する。
   実Runnerの対戦ログ一致と、3世代×4試合の探索2回の全経路一致も検査する。
   build済みなら`node --test dist/ai-project/tests/*.test.js`でも実行できる。
@@ -24,9 +24,13 @@ npm run test:ai
 ```sh
 node dist/ai-project/milestone11.js wp02 3 10 first-legal
 node dist/ai-project/milestone11.js wp02 3 10 default
+node dist/ai-project/milestone11.js wp03 3 10 first-legal simple simple
+node dist/ai-project/milestone11.js wp03 3 10 first-legal random simple
 ```
 
-引数はseed、世代数、1世代の試合数、選出方式。世代数と試合数の省略時は10×100。
+引数はseed、世代数、1世代の試合数、選出方式、Current AI、Candidate AI。
+世代数と試合数の省略時は10×100。両AIはそれぞれ `random` / `simple`、省略時は従来の `random`。
+不明なAI名は実験開始前に拒否する。APIでは従来どおり両側のAI指定が必須。
 CLIの選出方式省略時は `first-legal`。WP01のCLI条件には末尾に `legacy` を追加する。
 小規模確認には `node dist/ai-project/milestone11.js sample 3 4` を使える。
 
@@ -92,7 +96,11 @@ ID・時刻・保存先は探索の乱数には影響しない。出力ディレ
 初期Party、各世代の変異と両Party、各試合のRunner seed・結果、
 勝敗/Draw/Unknown/Errorの集計、採否、最終Party、終了状態を含む。
 同じcommit・依存関係を用意してbuildし、JSONの `experiment` を `runExperiment` に渡せば再実行できる。
-CLIは両側random固定。他AIの記録はAPIで元の設定をそのまま使用する：
+WP03はschemaVersion 2に任意項目 `playerBehavior.current/candidate` を追加し、判断方針と版を記録する。
+`experiment.currentAI/candidateAI` が識別子、`ai` がクラス名、`policy.move/mega` が共通の主要設定。
+生成・表示・保存は同じ `PLAYER_SETTINGS` を参照する。旧schemaVersion 1/2にこの追加項目がなくても、
+`experiment` をそのまま再実行できる。旧ファイルは変更せず、欠落した方針は保存commitで確認する。
+選出方式などを含め、元の設定をそのまま使用するにはAPIを使う：
 
 ```js
 const fs = require('node:fs');
@@ -132,10 +140,39 @@ const evaluationConfig: EvaluationConfig = {
 | `random` | RandomPlayerAI | `default`。NC2000では低レベル優先、同レベルでは登録順 |
 | `simple` | SimplePlayerAI | `team 256`。登録2・5・6番目、先発は2番目 |
 
-milestone3～6・10～11は両側`random`、milestone7～8はBot1が`simple`、Bot2が`random`。
+milestone3～6・10は両側`random`、milestone7～8はBot1が`simple`、Bot2が`random`。
+milestone11はCLIの両AI引数で切り替える（省略時は両側random）。
 上表はlegacy時の選出。WP02では選出だけを明示的に切り替えられる。
 交代判断に関わる`move: 0.7`等もVer.1のRunner既定値を明記して維持した。
 Current＝Bot1、Candidate＝Bot2で固定する。WP01ではmilestone11のseed管理だけを追加した。
+
+## 最小限のPlayer AIの判断と検証
+
+WP03では既存 `SimplePlayerAI` を再利用し、行動規則を変更していない。
+親の `RandomPlayerAI.receiveRequest` がShowdownのrequestからdisabled技、瀕死や場のポケモン、
+交代不能等を処理し、Simpleは渡された技候補の先頭を選ぶ。常に技slot 1を送るわけではない。
+PP切れで先頭技がdisabledなら次の利用可能技、技がなくStruggleだけならその候補を選ぶ。
+PPや合法性のルールを独自実装せず、Simulatorの候補と最終受理判定を利用する。
+
+通常の技/交代の選択は継承したseed付き乱数判断（交代先がある場合のmove設定0.7）を維持する。
+交代先も合法候補からseed付き乱数で選ぶ。強制交代では技を選ばず控えを選び、waitには返答しない。
+`mega=0.6` は旧設定互換のため保持するがNC2000では発動しない。
+先頭技を選ぶ部分だけが非ランダムであり、AI全体が乱数を使わないという意味ではない。
+利用できない手に対する再要求の扱いも親へ任せ、それ以外のエラーは隠さない。
+
+相性、威力、命中、HP、回復タイミング、積み技の効果、相手の行動は評価しない。
+合法でも効果のない技を繰り返す可能性があり、強さの改善は主張しない。
+検証範囲はgen2nc2000のシングル、現行11固定セットと限定状態のfixture。
+未知の世代・形式・壊れたrequestへの一般的な安全性まで保証するものではない。
+legacyの固定team 256も旧実験互換用で、任意のレベル構成に対する合法選出保証にはfirst-legalを使う。
+
+`tests/player-ai.test.ts` は実Battleに状態を設定し、生成されたrequestへのAI返答を `Side.choose` で検査する。
+通常技、disabled、PP切れ、Struggle、trapped、通常/強制交代、waitを確認する。
+状態の発生過程すべてを再現するテストではなく、Simulatorが公開する要求への対応の検証である。
+探索→Evaluator→実Runnerの経路では、両席の生成クラスと送信行動を観測し、
+simple/random・random/simple・simple/simpleの各条件を2世代×3試合、2回ずつ実行する。
+初期Party・変異・実選出・行動・時刻行を除くBattleログ・結果・採否・最終Partyの一致を確認する。
+既存の選出独立性、日本語11種、未知名fallback、英語JSON、旧Random探索の回帰テストも維持する。
 
 ## 入力型とコピー
 

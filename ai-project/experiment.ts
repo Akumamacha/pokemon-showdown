@@ -5,7 +5,9 @@ import * as path from 'node:path';
 import { TeamValidator } from '../sim/team-validator';
 import { type PRNGSeed } from '../sim/prng';
 import { evaluateParties, type BattleRecord, type RunBattle } from './battle-evaluator';
-import { PLAYER_AI, printEvaluationConfig, selectionDescription, type EvaluationConfig } from './experiment-config';
+import {
+	PLAYER_AI, PLAYER_SETTINGS, printEvaluationConfig, selectionDescription, type EvaluationConfig,
+} from './experiment-config';
 import { displayParty, pokemonName } from './pokemon-display';
 import { deriveSeed, experimentRNG, SEED_SCHEME } from './experiment-rng';
 import { buildRandomParty, mutateParty } from './party-builder';
@@ -44,6 +46,8 @@ export interface ExperimentRecord {
 	software: { gitCommit: string | null, gitDirty: boolean | null, node: string };
 	experiment: ExperimentConfig;
 	ai: { current: string, candidate: string, currentSelection: string, candidateSelection: string };
+	// schema 2への任意の追加項目。旧記録にない方針は推測せず、保存commitで確認する。
+	playerBehavior?: { current: string, candidate: string };
 	policy: { seats: string, acceptance: string, move: number, mega: number };
 	rng: { scheme: string, partySeed: PRNGSeed, battleDerivation: string };
 	initialParty: PokemonSet[];
@@ -104,7 +108,10 @@ export async function runExperiment(
 			currentSelection: selectionDescription(settings.currentAI, settings.currentSelection),
 			candidateSelection: selectionDescription(settings.candidateAI, settings.candidateSelection),
 		},
-		policy: { seats: 'Current=Bot 1, Candidate=Bot 2', acceptance: 'candidateWins > currentWins', move: 0.7, mega: 0.6 },
+		playerBehavior: {
+			current: PLAYER_AI[settings.currentAI].behavior, candidate: PLAYER_AI[settings.candidateAI].behavior,
+		},
+		policy: { seats: 'Current=Bot 1, Candidate=Bot 2', acceptance: 'candidateWins > currentWins', ...PLAYER_SETTINGS },
 		rng: {
 			scheme: SEED_SCHEME, partySeed,
 			battleDerivation: 'deriveSeed(experimentSeed, "battle", generation, game); Runner.prng -> Battle + both Player AI seeds',

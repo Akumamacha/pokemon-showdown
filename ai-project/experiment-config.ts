@@ -5,19 +5,26 @@ import { enumerateSelections, type SelectionMode, type SelectedTeam } from './te
 
 export type PlayerAIKind = 'random' | 'simple';
 
+// 実際の生成・表示・記録で同じ設定を使う。旧Random実験の乱数消費を変えない。
+export const PLAYER_SETTINGS = { move: 0.7, mega: 0.6 } as const;
+
 // 表示名・選出方式・実際の生成処理を同じ場所で管理し、ログとの食い違いを防ぐ。
 export const PLAYER_AI = {
 	random: {
 		name: 'RandomPlayerAI',
+		behavior: 'random-available-move; seeded-random-switch; v1',
 		selection: 'default (NC2000: lower levels first, then registration order)',
 		createAI: (stream, options) => new RandomPlayerAI(stream, options),
 	},
 	simple: {
 		name: 'SimplePlayerAI',
+		behavior: 'first-available-move; seeded-random-switch; v1',
 		selection: 'team 256 (slots 2, 5, 6; lead: slot 2)',
 		createAI: (stream, options) => new SimplePlayerAI(stream, options),
 	},
-} satisfies Record<PlayerAIKind, { name: string, selection: string, createAI: AIOptions['createAI'] }>;
+} satisfies Record<PlayerAIKind, {
+	name: string, behavior: string, selection: string, createAI: AIOptions['createAI'],
+}>;
 
 export interface EvaluationConfig {
 	format: 'gen2nc2000';
@@ -79,8 +86,7 @@ export function createPlayerOptions(
 			return player;
 		},
 		// Ver.1のRunner設定を明記する。交代判断などの戦略は変更しない。
-		move: 0.7,
-		mega: 0.6,
+		...PLAYER_SETTINGS,
 		team: structuredClone(team),
 	};
 }
@@ -100,5 +106,6 @@ export function printEvaluationConfig(config: EvaluationConfig): void {
 	console.log(`Current AI (Bot 1): ${current.name}; Selection: ${currentSelection}`);
 	console.log(`Candidate AI (Bot 2): ${candidate.name}; Selection: ${candidateSelection}`);
 	console.log(`Games per evaluation: ${config.games}`);
-	console.log('AI move probability: 0.7; seats: fixed（seed管理は呼び出し元の設定による）');
+	console.log(`AI move probability: ${PLAYER_SETTINGS.move}; seats: fixed（seed管理は呼び出し元の設定による）`);
+	console.log(`操作方針 Current: ${current.behavior}; Candidate: ${candidate.behavior}`);
 }
