@@ -22,6 +22,11 @@ void test('simple-counterは公開speciesだけで合法候補を採点し、相
 	assert.ok(a.reason.includes('公開Preview'));
 	assert.deepEqual(a.opponentSpecies, waterWeak.map(p => p.species));
 	assert.deepEqual(a.opponentLevels, waterWeak.map(p => p.level));
+	const privateMovesChanged = structuredClone(waterWeak);
+	privateMovesChanged[0].moves = ['Toxic', 'Rest', 'Sleep Talk', 'Explosion'];
+	const withoutPrivateMoves = chooseSimpleCounter(current, privateMovesChanged);
+	assert.deepEqual(withoutPrivateMoves.slots, a.slots);
+	assert.equal(withoutPrivateMoves.score, a.score);
 	assert.deepEqual(a.slots.sort((x, y) => x - y), [...a.slots].sort((x, y) => x - y));
 	assert.deepEqual(chooseSimpleCounter(current, current.slice(0, 3)).slots, [1, 2, 3]);
 });

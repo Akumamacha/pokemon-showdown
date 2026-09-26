@@ -55,7 +55,7 @@ NC2000の実装は `config/formats.ts`、`data/rulesets.ts`、`sim/side.ts` を�
 `first-legal` と `default` はPlayer AIから独立して選出だけを切り替える。
 `legacy`（API省略時）は従来AIの選出を維持し、randomはdefault、simpleはteam 256。
 
-`simple-counter` はWP04の簡易Selection AIで、合法な20候補だけを評価する。Team Previewで公開される相手6匹のspeciesだけを使い、各候補の通常技タイプの攻撃範囲から相手の技タイプによる被攻撃範囲を引いた整数スコアを計算する。Status技、威力、命中、持ち物、技、状態、相手の非公開情報は使わない。
+`simple-counter` はWP04の簡易Selection AIで、合法な20候補だけを評価する。Team Previewで公開される相手6匹のspecies/typeだけを使い、各候補の通常技タイプの攻撃範囲から相手speciesのtypeによる被攻撃範囲を引いた整数スコアを計算する。相手Partyに設定されたmoves配列は参照しない。Status技、威力、命中、持ち物、技、状態、相手の非公開情報は使わない。
 スコアが高い候補を選び、同点は合計レベル、slot順で決める。先発は候補内の攻撃スコアが高いslot、同点は小さいslot。相手Previewが欠損・6匹未満なら、最初の合法候補へフォールバックする。これは説明可能なベースラインであり、相性や強さの証明ではない。
 選出記録にはスコア、ルール説明、相手species要約を保存する。`simple-counter` と `random` / `simple` のPlayer AIは独立して指定できる。
 APIで選出指定のない旧設定を読み込んでも、新方式へ黙って切り替えない。

@@ -38,7 +38,7 @@ export function chooseSimpleCounter(party: PokemonSet[], opponent: PokemonSet[])
 		};
 	}
 	const dex = Dex.forFormat('gen2nc2000');
-	const scoreSet = (set: PokemonSet, targets: PokemonSet[], defensive = false) => {
+	const scoreMoves = (set: PokemonSet, targets: PokemonSet[]) => {
 		let score = 0;
 		for (const moveName of set.moves) {
 			const move = dex.moves.get(moveName);
@@ -46,22 +46,28 @@ export function chooseSimpleCounter(party: PokemonSet[], opponent: PokemonSet[])
 			for (const target of targets) {
 				const species = dex.species.get(target.species);
 				const effectiveness = dex.getEffectiveness(move.type, species.types);
-				score += defensive ? -effectiveness : effectiveness;
+				score += effectiveness;
 			}
 		}
 		return score;
 	};
+	const scoreSpeciesTypes = (species: string, targets: PokemonSet[]) => {
+		const sourceTypes = dex.species.get(species).types;
+		return targets.reduce((score, target) => score + sourceTypes.reduce((sum, type) =>
+			sum + dex.getEffectiveness(type, dex.species.get(target.species).types), 0), 0);
+	};
 	const scored = candidates.legal.map(candidate => {
-		const offensive = candidate.slots.reduce((sum, slot) => sum + scoreSet(party[slot - 1], opponent), 0);
-		const defensive = candidate.slots.reduce((sum, slot) => sum + scoreSet(opponent[slot - 1],
-			candidate.slots.map(index => party[index - 1]), true), 0);
+		const offensive = candidate.slots.reduce((sum, slot) => sum + scoreMoves(party[slot - 1], opponent), 0);
+		// 防御側は相手の技を見ず、Previewで公開される相手speciesのtypeだけを使う。
+		const defensive = candidate.slots.reduce((sum, slot) => sum - opponent.reduce((inner, target) =>
+			inner + scoreSpeciesTypes(target.species, [party[slot - 1]]), 0), 0);
 		return { candidate, score: offensive + defensive };
 	});
 	scored.sort((a, b) => b.score - a.score || a.candidate.totalLevel - b.candidate.totalLevel ||
 		a.candidate.slots.join(',').localeCompare(b.candidate.slots.join(',')));
 	const winner = scored[0];
 	const lead = [...winner.candidate.slots].sort((a, b) => {
-		const diff = scoreSet(party[b - 1], opponent) - scoreSet(party[a - 1], opponent);
+		const diff = scoreMoves(party[b - 1], opponent) - scoreMoves(party[a - 1], opponent);
 		return diff || a - b;
 	})[0];
 	const slots = [lead, ...winner.candidate.slots.filter(slot => slot !== lead)];
