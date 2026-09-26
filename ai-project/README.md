@@ -244,3 +244,14 @@ node dist/ai-project/milestone13.js wp06 1 1 simple-counter simple simple
 記録は探索記録と前後Benchmark（2基準×両座席）を一つの統合JSONにまとめる。Current/CandidateのAIまたは
 Selectionが異なる場合は交絡条件として警告し、Party差の根拠として単独解釈しない。小試合数の勝敗から性能改善や
 統計的有意差は主張しない。旧milestone11 CLI、旧schema、WP04の公開species/type制約は維持する。
+
+## WP07 独立した最終評価
+
+`final-evaluation-plan.json` は本番実験前に固定した評価計画である。WP05の
+`registration-first6` / `registration-last6` と過去ログに出現した6匹系列を避け、固定11セットから未使用と監査した
+2基準Partyを使う。評価用seed名前空間、AI、Selection、試合数、両座席、結果分類、失敗時対応も計画に含める。
+
+`final-evaluation.ts` はWP05 Benchmarkとは別の `kind: final-evaluation` 記録を作り、探索前/探索後のPartyを
+同じ基準相手・同じ条件で測定する。`milestone14.ts` で実行し、計画JSONは結果に合わせて変更しない。
+開発用テストは専用のdummy fixtureとseedを使い、本番用条件を消費しない。勝敗は基準相手別・座席別に保存し、
+小規模試合数から最強性や統計的有意差を主張しない。
