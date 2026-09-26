@@ -1,4 +1,5 @@
 import { createPokemonSet, type PokemonSetInput } from './pokemon-set';
+import { PRNG } from '../sim/prng';
 
 const poolInputs: PokemonSetInput[] = [
 	{
@@ -84,7 +85,8 @@ const poolInputs: PokemonSetInput[] = [
 // 直接Runnerへ渡す古い単発実験の既定値（0）とは区別する。
 export const pokemonPool: PokemonSet[] = poolInputs.map(set => createPokemonSet(set, 252));
 
-export function buildRandomParty(): PokemonSet[] {
+// 探索ではseed付きPRNGを注入する。旧単発実験の引数省略は従来どおり非固定とする。
+export function buildRandomParty(rng: PRNG = new PRNG()): PokemonSet[] {
 	const candidates = [...pokemonPool];
 	const party: PokemonSet[] = [];
 	const usedItems = new Set<string>();
@@ -99,7 +101,7 @@ export function buildRandomParty(): PokemonSet[] {
 		}
 
 		const selected =
-			validCandidates[Math.floor(Math.random() * validCandidates.length)];
+			validCandidates[rng.random(validCandidates.length)];
 
 		// Validatorは入力を補完するため、候補プールの参照を渡さない。
 		party.push(structuredClone(selected));
@@ -121,12 +123,12 @@ export function buildRandomParty(): PokemonSet[] {
  * Ver.1では探索を単純にするため、
  * 技・アイテム・レベルは変更せず「ポケモン1匹の交換」だけを変異とする。
  */
-export function mutateParty(party: PokemonSet[]): PokemonSet[] {
+export function mutateParty(party: PokemonSet[], rng: PRNG = new PRNG()): PokemonSet[] {
 	// 技配列やEV/IVも含めてコピーし、CurrentとCandidateを独立させる。
 	const mutatedParty = structuredClone(party);
 
 	// 交換する場所をランダムに1か所選ぶ
-	const replaceIndex = Math.floor(Math.random() * mutatedParty.length);
+	const replaceIndex = rng.random(mutatedParty.length);
 
 	// 現在使われているポケモンのSpeciesを記録する
 	// ただし交換対象の1匹は除外する
@@ -158,7 +160,7 @@ export function mutateParty(party: PokemonSet[]): PokemonSet[] {
 
 	// 合法候補からランダムに1匹選ぶ
 	const replacement =
-		candidates[Math.floor(Math.random() * candidates.length)];
+		candidates[rng.random(candidates.length)];
 
 	mutatedParty[replaceIndex] = structuredClone(replacement);
 

@@ -1,9 +1,23 @@
 import { Runner, type RunnerOptions } from '../sim/tools/runner';
+import { type PRNGSeed } from '../sim/prng';
 import { createPlayerOptions, printEvaluationConfig, type EvaluationConfig } from './experiment-config';
 
 export type BattleOutcome = 'current' | 'candidate' | 'draw' | 'unknown';
 
 export type RunBattle = (options: RunnerOptions) => Promise<void>;
+
+export interface BattleRecord {
+	game: number;
+	runnerSeed: PRNGSeed;
+	outcome: BattleOutcome | 'error';
+	error?: string;
+}
+
+export interface EvaluationTrace {
+	seeds: readonly PRNGSeed[];
+	// 各試合直後に保存する。失敗した試合もDrawに混ぜず記録する。
+	onBattle: (record: BattleRecord) => void;
+}
 
 async function runShowdownBattle(options: RunnerOptions): Promise<void> {
 	await new Runner(options).run();
@@ -42,11 +56,18 @@ export async function evaluateParties(
 	showProgress = false,
 	// 終局ログの欠落・異常も再現して検査できるよう、対戦実行だけを差し替え可能にする。
 	runBattle: RunBattle = runShowdownBattle,
+	trace?: EvaluationTrace,
 ): Promise<EvaluationResult> {
 	// 非同期評価の途中で呼び出し元が設定を変更しても、この評価の条件は変わらない。
 	const settings = { ...config };
 	printEvaluationConfig(settings);
 	const numberOfGames = settings.games;
+	const seeds = trace ? [...trace.seeds] : undefined;
+	if (seeds && seeds.length !== numberOfGames) throw new Error('Battle seed count mismatch');
+	// JavaScriptから穴あき配列を渡しても、暗黙のseed生成へフォールバックしない。
+	if (seeds?.some(seed => typeof seed !== 'string' || !seed)) {
+		throw new Error('Missing Battle seed');
+	}
 	let currentWins = 0;
 	let candidateWins = 0;
 	let draws = 0;
@@ -59,6 +80,8 @@ export async function evaluateParties(
 		// Showdown Runnerで1試合を実行する
 		const options: RunnerOptions = {
 			format: settings.format,
+			// RunnerはこのseedからBattle本体と両AIのseedを決定的に生成する。
+			prng: seeds?.[i - 1],
 
 			// Bot 1には現在の基準パーティを渡す
 			p1options: createPlayerOptions(settings.currentAI, currentParty),
@@ -86,8 +109,17 @@ export async function evaluateParties(
 		try {
 			await runBattle(options);
 		} catch (error) {
+			if (trace && seeds) trace.onBattle({
+				game: i, runnerSeed: seeds[i - 1], outcome: 'error', error: String(error),
+			});
 			throw new Error(`Battle ${i}/${numberOfGames} failed: ${String(error)}`);
 		}
+
+		const outcome = parseBattleOutcome(terminalLine);
+		if (trace && seeds) trace.onBattle({
+			game: i, runnerSeed: seeds[i - 1], outcome,
+			...(outcome === 'unknown' ? { error: 'Unknown result (missing win/tie log)' } : {}),
+		});
 
 		// 勝敗を集計する
 		switch (parseBattleOutcome(terminalLine)) {
@@ -110,7 +142,7 @@ export async function evaluateParties(
 			showProgress &&
 			(i % 10 === 0 || i === numberOfGames)
 		) {
-			console.log(`${i}/${numberOfGames} battles completed`);
+			console.log(`${i}/${numberOfGames} 試合完了`);
 		}
 	}
 

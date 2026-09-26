@@ -50,5 +50,5 @@ export function printEvaluationConfig(config: EvaluationConfig): void {
 	console.log(`Current AI (Bot 1): ${current.name}; Selection: ${current.selection}`);
 	console.log(`Candidate AI (Bot 2): ${candidate.name}; Selection: ${candidate.selection}`);
 	console.log(`Games per evaluation: ${config.games}`);
-	console.log('AI move probability: 0.7; seats: fixed; seed: not managed');
+	console.log('AI move probability: 0.7; seats: fixed（seed管理は呼び出し元の設定による）');
 }

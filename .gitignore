@@ -50,6 +50,9 @@ tmp/**/*
 downloads
 dist
 
+# 再生成可能な探索記録（一時保存も含む）
+/ai-project/experiments/
+
 # egg related
 develop-eggs
 *.egg-info

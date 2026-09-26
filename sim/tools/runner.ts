@@ -51,7 +51,7 @@ export class Runner {
 	private readonly p3options: AIOptions;
 	private readonly p4options: AIOptions;
 	private readonly format: string;
-        private readonly onChunk?: (chunk: string) => void;
+	private readonly onChunk?: (chunk: string) => void;
 	private readonly input: boolean;
 	private readonly output: boolean;
 	private readonly error: boolean;
@@ -59,7 +59,7 @@ export class Runner {
 
 	constructor(options: RunnerOptions) {
 		this.format = options.format;
-                this.onChunk = options.onChunk;
+		this.onChunk = options.onChunk;
 
 		this.prng = PRNG.get(options.prng);
 		this.p1options = { ...Runner.AI_OPTIONS, ...options.p1options };
@@ -134,7 +134,7 @@ export class Runner {
 
 		for await (const chunk of streams.omniscient) {
 			if (this.output) console.log(chunk);
-                        this.onChunk?.(chunk);
+			this.onChunk?.(chunk);
 		}
 		return streams.omniscient.writeEnd();
 	}
