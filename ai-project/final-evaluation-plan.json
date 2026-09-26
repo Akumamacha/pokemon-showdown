@@ -1,0 +1,814 @@
+{
+  "schemaVersion": 1,
+  "kind": "final-evaluation-plan",
+  "version": "wp07-final-v1",
+  "frozenAt": "2026-09-27T00:00:00+09:00",
+  "sourceCommit": "8e627a1290d7ec76771132975f6d87f8a61cd96e",
+  "sourceExperimentId": "milestone11-2026-09-26T23-43-45-208Z-408ab502-ad17-4347-8ca0-0ca4dbd28f41",
+  "format": "gen2nc2000",
+  "parties": {
+    "before": [
+      {
+        "name": "Skarmory",
+        "species": "Skarmory",
+        "item": "Quick Claw",
+        "moves": [
+          "Drill Peck",
+          "Toxic",
+          "Rest",
+          "Whirlwind"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Exeggutor",
+        "species": "Exeggutor",
+        "item": "Miracle Berry",
+        "moves": [
+          "Psychic",
+          "Giga Drain",
+          "Sleep Powder",
+          "Explosion"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Suicune",
+        "species": "Suicune",
+        "item": "Gold Berry",
+        "moves": [
+          "Surf",
+          "Ice Beam",
+          "Rest",
+          "Sleep Talk"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Starmie",
+        "species": "Starmie",
+        "item": "Never-Melt Ice",
+        "moves": [
+          "Surf",
+          "Psychic",
+          "Recover",
+          "Thunder Wave"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Zapdos",
+        "species": "Zapdos",
+        "item": "Mint Berry",
+        "moves": [
+          "Thunderbolt",
+          "Hidden Power Ice",
+          "Rest",
+          "Sleep Talk"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 30,
+          "atk": 30,
+          "def": 26,
+          "spa": 30,
+          "spd": 30,
+          "spe": 30
+        },
+        "hpType": "Ice"
+      },
+      {
+        "name": "Machamp",
+        "species": "Machamp",
+        "item": "Scope Lens",
+        "moves": [
+          "Cross Chop",
+          "Rock Slide",
+          "Earthquake",
+          "Curse"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    ],
+    "after": [
+      {
+        "name": "Skarmory",
+        "species": "Skarmory",
+        "item": "Quick Claw",
+        "moves": [
+          "Drill Peck",
+          "Toxic",
+          "Rest",
+          "Whirlwind"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Exeggutor",
+        "species": "Exeggutor",
+        "item": "Miracle Berry",
+        "moves": [
+          "Psychic",
+          "Giga Drain",
+          "Sleep Powder",
+          "Explosion"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Suicune",
+        "species": "Suicune",
+        "item": "Gold Berry",
+        "moves": [
+          "Surf",
+          "Ice Beam",
+          "Rest",
+          "Sleep Talk"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Starmie",
+        "species": "Starmie",
+        "item": "Never-Melt Ice",
+        "moves": [
+          "Surf",
+          "Psychic",
+          "Recover",
+          "Thunder Wave"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      },
+      {
+        "name": "Zapdos",
+        "species": "Zapdos",
+        "item": "Mint Berry",
+        "moves": [
+          "Thunderbolt",
+          "Hidden Power Ice",
+          "Rest",
+          "Sleep Talk"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "N",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 30,
+          "atk": 30,
+          "def": 26,
+          "spa": 30,
+          "spd": 30,
+          "spe": 30
+        },
+        "hpType": "Ice"
+      },
+      {
+        "name": "Machamp",
+        "species": "Machamp",
+        "item": "Scope Lens",
+        "moves": [
+          "Cross Chop",
+          "Rock Slide",
+          "Earthquake",
+          "Curse"
+        ],
+        "level": 50,
+        "ability": "No Ability",
+        "nature": "Serious",
+        "gender": "M",
+        "evs": {
+          "hp": 252,
+          "atk": 252,
+          "def": 252,
+          "spa": 252,
+          "spd": 252,
+          "spe": 252
+        },
+        "ivs": {
+          "hp": 31,
+          "atk": 31,
+          "def": 31,
+          "spa": 31,
+          "spd": 31,
+          "spe": 31
+        }
+      }
+    ]
+  },
+  "targetAI": "simple",
+  "targetSelection": "simple-counter",
+  "baselineAI": "random",
+  "baselineSelection": "first-legal",
+  "opponents": [
+    {
+      "id": "unused-registration-1-5-7",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "rationale": "固定11セットの登録順1,2,3,4,5,7。過去JSONの6匹Party系列に未出現。WP05 first6/last6と異なる。",
+      "party": [
+        {
+          "name": "Snorlax",
+          "species": "Snorlax",
+          "item": "Leftovers",
+          "moves": [
+            "Body Slam",
+            "Earthquake",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 55,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Zapdos",
+          "species": "Zapdos",
+          "item": "Mint Berry",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Cloyster",
+          "species": "Cloyster",
+          "item": "Gold Berry",
+          "moves": [
+            "Surf",
+            "Ice Beam",
+            "Spikes",
+            "Explosion"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Exeggutor",
+          "species": "Exeggutor",
+          "item": "Miracle Berry",
+          "moves": [
+            "Psychic",
+            "Giga Drain",
+            "Sleep Powder",
+            "Explosion"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Marowak",
+          "species": "Marowak",
+          "item": "Thick Club",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "Hidden Power Bug",
+            "Swords Dance"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Raikou",
+          "species": "Raikou",
+          "item": "Mint Berry",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": "unused-registration-1-5-8",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        7
+      ],
+      "rationale": "固定11セットの登録順1,2,3,4,5,8。過去JSONの6匹Party系列に未出現。WP05 first6/last6と異なる。",
+      "party": [
+        {
+          "name": "Snorlax",
+          "species": "Snorlax",
+          "item": "Leftovers",
+          "moves": [
+            "Body Slam",
+            "Earthquake",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 55,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Zapdos",
+          "species": "Zapdos",
+          "item": "Mint Berry",
+          "moves": [
+            "Thunderbolt",
+            "Hidden Power Ice",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Cloyster",
+          "species": "Cloyster",
+          "item": "Gold Berry",
+          "moves": [
+            "Surf",
+            "Ice Beam",
+            "Spikes",
+            "Explosion"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Exeggutor",
+          "species": "Exeggutor",
+          "item": "Miracle Berry",
+          "moves": [
+            "Psychic",
+            "Giga Drain",
+            "Sleep Powder",
+            "Explosion"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Marowak",
+          "species": "Marowak",
+          "item": "Thick Club",
+          "moves": [
+            "Earthquake",
+            "Rock Slide",
+            "Hidden Power Bug",
+            "Swords Dance"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        },
+        {
+          "name": "Suicune",
+          "species": "Suicune",
+          "item": "Gold Berry",
+          "moves": [
+            "Surf",
+            "Ice Beam",
+            "Rest",
+            "Sleep Talk"
+          ],
+          "level": 50,
+          "ability": "",
+          "nature": "",
+          "gender": "",
+          "evs": {
+            "hp": 252,
+            "atk": 252,
+            "def": 252,
+            "spa": 252,
+            "spd": 252,
+            "spe": 252
+          },
+          "ivs": {
+            "hp": 31,
+            "atk": 31,
+            "def": 31,
+            "spa": 31,
+            "spd": 31,
+            "spe": 31
+          }
+        }
+      ]
+    }
+  ],
+  "games": 5,
+  "seats": [
+    "target-bot1",
+    "target-bot2"
+  ],
+  "seed": {
+    "namespace": "wp07-final-evaluation-v1",
+    "derivation": "deriveSeed(namespace, partyLabel, opponentId, seat, game)"
+  },
+  "outcomes": [
+    "target",
+    "baseline",
+    "draw",
+    "unknown",
+    "error"
+  ],
+  "drawRateDenominator": "all completed games; report wins/draws/errors separately",
+  "failure": "保存失敗・Unknown・Errorは成功扱いせず記録し、条件変更や再探索をしない",
+  "interpretation": "小規模評価であり最強性・統計的有意差・NC2000全体への一般化を主張しない"
+}
