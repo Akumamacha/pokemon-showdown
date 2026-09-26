@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "kind": "final-evaluation-plan",
-  "version": "wp07-final-v1",
-  "frozenAt": "2026-09-27T00:00:00+09:00",
+  "version": "wp07-final-v2",
+  "frozenAt": "2026-09-27T00:05:00+09:00",
   "sourceCommit": "8e627a1290d7ec76771132975f6d87f8a61cd96e",
   "sourceExperimentId": "milestone11-2026-09-26T23-43-45-208Z-408ab502-ad17-4347-8ca0-0ca4dbd28f41",
   "format": "gen2nc2000",
@@ -392,16 +392,16 @@
   "baselineSelection": "first-legal",
   "opponents": [
     {
-      "id": "unused-registration-1-5-7",
+      "id": "unused-registration-1-5-9",
       "indices": [
         0,
         1,
         2,
         3,
         4,
-        6
+        8
       ],
-      "rationale": "固定11セットの登録順1,2,3,4,5,7。過去JSONの6匹Party系列に未出現。WP05 first6/last6と異なる。",
+      "rationale": "固定11セットの登録順1,2,3,4,5,9。Item Clause合法、過去JSONの6匹Party系列に未出現、WP05 first6/last6と異なる。",
       "party": [
         {
           "name": "Snorlax",
@@ -559,14 +559,14 @@
           }
         },
         {
-          "name": "Raikou",
-          "species": "Raikou",
-          "item": "Mint Berry",
+          "name": "Machamp",
+          "species": "Machamp",
+          "item": "Scope Lens",
           "moves": [
-            "Thunderbolt",
-            "Hidden Power Ice",
-            "Rest",
-            "Sleep Talk"
+            "Cross Chop",
+            "Rock Slide",
+            "Earthquake",
+            "Curse"
           ],
           "level": 50,
           "ability": "",
@@ -592,16 +592,16 @@
       ]
     },
     {
-      "id": "unused-registration-1-5-8",
+      "id": "unused-registration-1-4-6-9",
       "indices": [
         0,
         1,
         2,
         3,
-        4,
-        7
+        5,
+        8
       ],
-      "rationale": "固定11セットの登録順1,2,3,4,5,8。過去JSONの6匹Party系列に未出現。WP05 first6/last6と異なる。",
+      "rationale": "固定11セットの登録順1,2,3,4,6,9。Item Clause合法、過去JSONの6匹Party系列に未出現、WP05 first6/last6と異なる。",
       "party": [
         {
           "name": "Snorlax",
@@ -728,14 +728,14 @@
           }
         },
         {
-          "name": "Marowak",
-          "species": "Marowak",
-          "item": "Thick Club",
+          "name": "Starmie",
+          "species": "Starmie",
+          "item": "Never-Melt Ice",
           "moves": [
-            "Earthquake",
-            "Rock Slide",
-            "Hidden Power Bug",
-            "Swords Dance"
+            "Surf",
+            "Psychic",
+            "Recover",
+            "Thunder Wave"
           ],
           "level": 50,
           "ability": "",
@@ -759,14 +759,14 @@
           }
         },
         {
-          "name": "Suicune",
-          "species": "Suicune",
-          "item": "Gold Berry",
+          "name": "Machamp",
+          "species": "Machamp",
+          "item": "Scope Lens",
           "moves": [
-            "Surf",
-            "Ice Beam",
-            "Rest",
-            "Sleep Talk"
+            "Cross Chop",
+            "Rock Slide",
+            "Earthquake",
+            "Curse"
           ],
           "level": 50,
           "ability": "",
