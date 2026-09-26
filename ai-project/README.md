@@ -207,3 +207,25 @@ milestone6・10の重複していた集計処理も共通Evaluatorへ統一し�
 候補セット追加、採用基準・探索アルゴリズムの変更は後続Milestoneで扱う。
 default方式のカビゴン不選出や、100試合の僅かな勝ち越しを採用する問題も残る。
 新方式では合法候補にカビゴンを含めて出場できるが、常に選ぶ戦略ではない。
+
+## WP05 共通Benchmark
+
+WP05は探索とは分離した固定条件の比較経路を追加した。`benchmark.ts` の
+`runBenchmark` は、固定11セットから機械的に作る `registration-first6` と
+`registration-last6` の2基準Party、対象側と基準側の両座席を順に実行する。
+これらのPartyは登録順を固定するためのfixtureであり、代表性や強さを主張しない。
+
+各試合は `deriveSeed(experimentSeed, "benchmark", baselineId, seat, game)` で独立したseedを持ち、
+対象/基準の実選出（slot・species・level）を記録する。結果はtarget、baseline、draw、unknown、errorに分け、
+条件ごとの集計と座席・基準Partyを残す。記録形式は探索のschemaとは別の
+`kind: common-benchmark` / `schemaVersion: 1` で、JSONは `ai-project/experiments/` に保存される。
+試合数は小規模の動作確認用に設定でき、結果から有意差や最強性は主張しない。
+
+実動確認例：
+
+```bash
+node dist/ai-project/milestone12.js wp05 10 first6 simple simple-counter
+```
+
+このCLIはWP05の対象PartyとAI/選出方式を指定し、基準側をrandom + first-legalに固定する。
+既存のmilestone11探索・旧schema記録は変更しない。
