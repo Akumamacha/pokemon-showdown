@@ -20,5 +20,9 @@ describe('WP01B observation artifact', () => {
   assert.match(page,/カビゴン \(Snorlax\)|サンダー \(Zapdos\)|ゲンガー \(Gengar\)/);
   assert.match(page,/10まんボルト \(Thunderbolt\)|じしん \(Earthquake\)|なみのり \(Surf\)/);
   assert.ok(!page.includes('|request|')); assert.ok(!page.includes('|poke|'));
+  const fixture={...o,matchId:'fixture',visibleLog:'|turn|1|\n|switch|p1a: Snorlax|Snorlax, L55|\n|move|p1a: Snorlax|Body Slam|p2a: Gengar|\n|move|p1a: Snorlax|Sleep Talk|p2a: Gengar|',japaneseTurns:[]};
+  fs.writeFileSync(path.join(dir,'fixture.json'),JSON.stringify(fixture)); regenerateHtml(dir);
+  const fixturePage=fs.readFileSync(path.join(dir,'fixture.html'),'utf8');
+  assert.match(fixturePage,/カビゴン \(Snorlax\)/); assert.match(fixturePage,/のしかかり \(Body Slam\)/); assert.match(fixturePage,/ねごと \(Sleep Talk\)/);
  });
 });
