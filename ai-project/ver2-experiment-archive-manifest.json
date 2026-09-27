@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "kind": "ver2-experiment-archive-manifest",
+  "createdAt": "2026-09-27T00:00:00+09:00",
+  "tag": "pokemon-gsc-ai-v2.0",
+  "archive": {
+    "path": "ai-project/experiments/ver2-experiment-json-archive.zip",
+    "trackedByGit": false,
+    "files": 366,
+    "bytes": 1111135,
+    "sha256": "38b1e48015f336d93f4156f2cdd92bf2a1ac1d53b5feebd4204581f4e2a8ee84",
+    "preservation": "local ignored archive; original JSON files remain unchanged"
+  },
+  "importantRecords": [
+    {
+      "path": "ai-project/experiments/final-evaluation-2026-09-26T23-55-21-249Z-4b877e85-abe2-419f-95a0-32e7720b7d55.json",
+      "sha256": "0b19ce8a3576197d7bf7794caede3aa159e3f4bd5f9f90b48d7ad9ee06e72d84"
+    },
+    {
+      "path": "ai-project/experiments/final-evaluation-2026-09-27T00-01-33-756Z-1299594b-b0d0-4d7b-8019-5f20302f3c12.json",
+      "sha256": "dcc22c0cd45e74a3119c1520ef5e531cb3edf0d805d23d59a1b20f6f69c1db13"
+    }
+  ],
+  "scope": "all ignored experiment JSON present at archive creation; includes WP01-WP07 development/test/evaluation records",
+  "restore": "extract archive under ai-project/experiments without overwriting originals unless explicitly requested"
+}
