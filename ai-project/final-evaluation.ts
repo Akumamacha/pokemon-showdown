@@ -69,7 +69,8 @@ export async function runFinalEvaluation(plan: FinalEvaluationPlan, outputDirect
 				const selections: Battle['selections'] = {}; let terminal = '';
 				const targetOptions = createPlayerOptions(plan.targetAI, structuredClone(party), plan.targetSelection, x => { selections.target = x; }, baseline);
 				const baselineOptions = createPlayerOptions(plan.baselineAI, structuredClone(baseline), plan.baselineSelection, x => { selections.baseline = x; }, party);
-				const seed = deriveSeed(plan.seed.namespace, partyLabel, opponent.id, seat, game); const targetP1 = seat === 'target-bot1';
+				// 同じPartyをbefore/afterで比較するため、seed系列にpartyLabelを含めない。
+				const seed = deriveSeed(plan.seed.namespace, opponent.id, seat, game); const targetP1 = seat === 'target-bot1';
 				const options: RunnerOptions = { format: plan.format, prng: seed,
 					p1options: targetP1 ? { ...targetOptions, team: structuredClone(targetOptions.team) } : { ...baselineOptions, team: structuredClone(baselineOptions.team) },
 					p2options: targetP1 ? { ...baselineOptions, team: structuredClone(baselineOptions.team) } : { ...targetOptions, team: structuredClone(targetOptions.team) }, error: true,

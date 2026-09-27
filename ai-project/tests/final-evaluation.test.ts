@@ -23,5 +23,10 @@ void test('最終評価fixtureは両Party・両基準・両座席を記録し、
 	assert.equal(result.record.conditions.length, 8);
 	assert.ok(result.record.conditions.every(c => c.battles.length === 1));
 	assert.equal(result.record.status, 'completed');
+	for (const before of result.record.conditions.filter(c => c.partyLabel === 'before')) {
+		const after = result.record.conditions.find(c => c.partyLabel === 'after' && c.opponentId === before.opponentId && c.seat === before.seat)!;
+		assert.equal(before.battles[0].seed, after.battles[0].seed);
+		assert.deepEqual(before.battles[0].selections, after.battles[0].selections);
+	}
 	await assert.rejects(runFinalEvaluation({ ...plan, games: 0 }, mkdtempSync(path.join(os.tmpdir(), 'wp07-invalid-'))), /正の整数/);
 });

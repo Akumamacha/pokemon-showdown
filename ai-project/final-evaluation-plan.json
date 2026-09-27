@@ -799,7 +799,7 @@
   ],
   "seed": {
     "namespace": "wp07-final-evaluation-v1",
-    "derivation": "deriveSeed(namespace, partyLabel, opponentId, seat, game)"
+    "derivation": "deriveSeed(namespace, opponentId, seat, game); partyLabel is intentionally excluded so identical before/after Parties receive paired seeds"
   },
   "outcomes": [
     "target",
